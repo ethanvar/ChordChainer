@@ -8,6 +8,8 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+using namespace std;
+#define LOG(x) std::cout << x << std::endl;
 
 //==============================================================================
 ChordVstAudioProcessorEditor::ChordVstAudioProcessorEditor (ChordVstAudioProcessor& p)
@@ -15,26 +17,37 @@ ChordVstAudioProcessorEditor::ChordVstAudioProcessorEditor (ChordVstAudioProcess
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (400, 300);
+    gainSlider.setSliderStyle (juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag);
+    gainSlider.setTextBoxStyle (juce::Slider::TextBoxBelow, false, 100, 20);
+    addAndMakeVisible (gainSlider);
+
+    gainSliderAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment> (audioProcessor.apvts, "GAIN", gainSlider);
+    setSize (800, 600);
+    centreWithSize (getWidth(), getHeight());
+    setVisible (true);
+    // centreWithSize (getWidth(), getHeight());
+    // LOG (getHeight());
+    // setVisible (true);
 }
 
 ChordVstAudioProcessorEditor::~ChordVstAudioProcessorEditor()
 {
+
 }
 
 //==============================================================================
 void ChordVstAudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
-
+    g.fillAll (juce::Colours::black);
     g.setColour (juce::Colours::white);
     g.setFont (juce::FontOptions (15.0f));
-    g.drawFittedText ("Hello World!", getLocalBounds(), juce::Justification::centred, 1);
+    // g.drawFittedText ("Chord Chainer", getLocalBounds(), juce::Justification::centred, 1);
+    // setSize (1024, 768);
 }
 
 void ChordVstAudioProcessorEditor::resized()
 {
-    // This is generally where you'll want to lay out the positions of any
-    // subcomponents in your editor..
+  gainSlider.setBounds (getWidth()/2-100, getHeight()/2-50, 200, 100);
+  // cout << "W: " << getWidth() << " H: " << getHeight() << endl;
 }
